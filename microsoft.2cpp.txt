@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+int solution(string &S, string &T) {
+    int N = S.length();
+    vector<int> differences(N);
+    vector<pair<int, int>> swapImpact; // {impact, index}
+
+    // Calculate initial differences
+    for (int i = 0; i < N; ++i) {
+        differences[i] = abs(S[i] - T[i]);
+    }
+
+    // Calculate impact of swapping for each position
+    for (int i = 0; i < N; ++i) {
+        int impact = abs((S[i] - '0') - (T[i] - '0'));
+        swapImpact.push_back({impact, i});
+    }
+
+    // Sort the swaps by their impact in descending order
+    sort(swapImpact.begin(), swapImpact.end(), greater<pair<int, int>>());
+
+    int swaps = 0;
+    int totalDifference = 0;
+    
+    // Perform swaps based on impact
+    for (const auto &pair : swapImpact) {
+        int idx = pair.second;
+        if (differences[idx] == 0) continue; // Already minimized difference
+        
+        int originalDiff = abs((S[idx] - '0') - (T[idx] - '0'));
+        int newDiff = min(abs((S[idx] - '0') - (T[idx] - '0')),
+                          abs((T[idx] - '0') - (S[idx] - '0')));
+
+        if (newDiff < originalDiff) {
+            totalDifference -= (originalDiff - newDiff);
+            ++swaps;
+            swap(S[idx], T[idx]);
+            differences[idx] = newDiff;
+        }
+    }
+
+    return swaps;
+}
+
+int main() {
+    string S = "29162";
+    string T = "10524";
+    cout << solution(S, T) 
+    
+}
