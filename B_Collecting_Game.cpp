@@ -24,39 +24,37 @@ ll ceil_div(ll a, ll b) {return a % b == 0 ? a / b : a / b + 1;}
 
 
 void solve() {
-    using ll = long long;
-    ll n;
+    int n;
     cin >> n;
 
-    vector<ll> v(n);
-    unordered_map<ll, ll> hm; 
-
+    vector<int> A(n);
     for (int i = 0; i < n; i++) {
-        cin >> v[i];
-        hm[v[i]] = 0;
+        cin >> A[i];
     }
 
+    vector<int> B = A; 
+    sort(B.begin(), B.end());  
 
-    vector<ll> sorted_v = v;
-    sort(sorted_v.begin(), sorted_v.end());
-
-    for (int i = 0; i < n; i++) {
-        ll modified_value = sorted_v[i];
-        ll cnt = 0;
-        for (int j = 0; j < n; j++) {
-            if (i != j && modified_value >= sorted_v[j]) { 
-                modified_value += sorted_v[j];
-                cnt++;
-            }
-        }
-        hm[sorted_v[i]] = cnt;
+    vector<long long> prefix(n);
+    prefix[0] = B[0];
+    for (int i = 1; i < n; i++) {
+        prefix[i] = prefix[i - 1] + B[i];
     }
-    for (auto i : v) {
-        cout << hm[i] << " ";
+
+    unordered_map<int, int> map;
+    map[B[n-1]] = n - 1;
+
+    for (int i = n - 2; i >= 0; i--) {
+        if (map.find(B[i]) != map.end()) continue;
+        if (prefix[i] >= B[i+1]) map[B[i]] = map[B[i+1]];
+        else map[B[i]] = i;
+    }
+
+    for (int a : A) {
+        cout << map[a] << " ";
     }
     cout << endl;
 }
-
 int main() {
 
     ios_base::sync_with_stdio(false);
