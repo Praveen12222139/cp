@@ -27,13 +27,31 @@ ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprim
 void solve() {
     ll n;
     cin >> n;
-    vector<ll>v(n);
-    for(int i=0;i<n;i++){
-        cin>>v[i];
+    vector<ll> v(n);
+    vector<ll> prx;
+    ll maxi = 0;
+    ll sum = 0;
+
+
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+        sum += v[i];
+        prx.push_back(sum);
     }
-    int mini=mne(v);
-    int maxi=mxe(v);
-    cout<<abs(maxi-mini)<<endl;
+   
+    for (ll i = 1; i <= n; i++) {
+        vector<ll> res;
+        if (n % i == 0) {
+            for (ll j = i; j <= n; j += i) {
+                sum = prx[j - 1] - (j - i - 1 >= 0 ? prx[j - i - 1] : 0);
+                res.push_back(sum);
+            }
+            sort(res.begin(), res.end()); 
+            maxi = max(maxi, res[(ll)res.size() - 1] - res[0]); 
+        }
+    }
+    
+    cout << maxi << endl;
 }
 
 int main() {
